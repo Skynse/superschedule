@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "545721613351",
+    "project_id": "schedule-up-deejyd",
+    "storage_bucket": "schedule-up-deejyd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545721613351:android:084e54edf9aaa7374d6202",
+        "android_client_info": {
+          "package_name": "com.example.superschedule"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSMge1lXo7xZc59wnvu_7wRPacdKynVyA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545721613351:android:d627c842c7fc01fa4d6202",
+        "android_client_info": {
+          "package_name": "com.mycompany.scheduleapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSMge1lXo7xZc59wnvu_7wRPacdKynVyA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
