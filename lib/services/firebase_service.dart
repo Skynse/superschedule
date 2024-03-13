@@ -26,7 +26,13 @@ class FirebaseService extends ChangeNotifier {
         .collection('users')
         .doc(_auth.currentUser!.uid)
         .get()
-        .then((value) => value['friends'] as List<dynamic>);
+        .then((value) {
+      if (value.data()!.containsKey('friends')) {
+        return List<Map<String, dynamic>>.from(value['friends']);
+      } else {
+        return <Map<String, dynamic>>[];
+      }
+    });
 
     yield friends
         .map((friend) => SuperUser.fromJson(friend as Map<String, dynamic>))

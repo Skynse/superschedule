@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:superschedule/models/group.dart';
 import 'package:superschedule/pages/createEvent.dart';
+import 'package:superschedule/services/firebase_service.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class GroupView extends StatefulWidget {
@@ -14,7 +15,7 @@ class GroupView extends StatefulWidget {
 }
 
 class _GroupViewState extends State<GroupView> {
-  Future<List<Appointment>> _getAllGroupMemberAvailabilities() async {
+  Future<List<Appointment>?> _getAllGroupMemberAvailabilities() async {
     var group = widget.group;
 
     var appointments = <Appointment>[];
@@ -33,13 +34,13 @@ class _GroupViewState extends State<GroupView> {
 
       for (var element in availability.docs) {
         var data = element.data();
-        var startTime = data['startTime'].toDate();
-        var endTime = data['endTime'].toDate();
+        var startTime = data['start_time'].toDate();
+        var endTime = data['end_time'].toDate();
 
         appointments.add(Appointment(
           startTime: startTime,
           endTime: endTime,
-          subject: memberDoc['display_name'],
+          subject: memberDoc['email'],
           color: Colors.green,
         ));
       }
@@ -93,9 +94,29 @@ class _GroupViewState extends State<GroupView> {
               return const Center(child: Text('No group availabilities found'));
             }
 
+            RecurrenceProperties recurrence =
+                RecurrenceProperties(startDate: DateTime.now());
+            recurrence.recurrenceType = RecurrenceType.weekly;
+            recurrence.interval = 2;
+            recurrence.weekDays = <WeekDays>[
+              WeekDays.sunday,
+              WeekDays.monday,
+              WeekDays.tuesday,
+              WeekDays.wednesday,
+              WeekDays.thursday,
+              WeekDays.friday,
+              WeekDays.saturday
+            ];
+            recurrence.recurrenceRange = RecurrenceRange.count;
+            recurrence.recurrenceCount = 10;
+
             return SfCalendar(
-              view: CalendarView.month,
+              view: CalendarView.week,
               dataSource: AvailabilityDataSource(snapshot.data!),
+              weekNumberStyle: WeekNumberStyle(
+                backgroundColor: Colors.blue,
+                textStyle: TextStyle(color: Colors.white),
+              ),
               monthViewSettings: const MonthViewSettings(
                   appointmentDisplayMode:
                       MonthAppointmentDisplayMode.appointment),
@@ -128,53 +149,52 @@ class _AddMemberFormState extends State<AddMemberForm> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
 
-  Future<void> addMemberToGroup(String email) async {
+  Future<void> addMemberToGroup(String id) async {
     var user = FirebaseAuth.instance.currentUser;
 
-    var userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .where('email', isEqualTo: email)
-        .get();
-
-    if (userDoc.docs.isNotEmpty) {
-      var userId = userDoc.docs.first.id;
-
-      await FirebaseFirestore.instance
-          .collection('groups')
-          .doc(widget.group.id)
-          .update({
-        'members': FieldValue.arrayUnion([userId])
-      });
-    }
+    await FirebaseFirestore.instance
+        .collection('groups')
+        .doc(widget.group.id)
+        .update({
+      'members': FieldValue.arrayUnion([id])
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            controller: _emailController,
-            decoration: const InputDecoration(labelText: 'Email'),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter an email';
-              }
-              return null;
-            },
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                // add member to group
-                Navigator.pop(context);
-              }
-            },
-            child: const Text('Add Member'),
-          ),
-        ],
-      ),
-    );
+    return Container(
+        child: StreamBuilder(
+      stream: FirebaseService().getFriends(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        }
+
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No friends found'));
+        }
+
+        return ListView.builder(
+          itemCount: snapshot.data!.length,
+          itemBuilder: (context, index) {
+            var friend = snapshot.data![index];
+            return ListTile(
+              title: Text(friend.name),
+              subtitle: Text(friend.email),
+              trailing: IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () async {
+                  await addMemberToGroup(friend.id);
+                  Navigator.pop(context);
+                },
+              ),
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(friend.photoUrl ?? ''),
+              ),
+            );
+          },
+        );
+      },
+    ));
   }
 }

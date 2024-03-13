@@ -19,9 +19,16 @@ class _GroupsPageState extends State<GroupsPage> {
         .where('members', arrayContains: user!.uid)
         .get();
 
-    print(groups.docs.map((e) => e.data()).toList());
+    List<Group> groupList = [];
 
-    return groups.docs.map((e) => Group.fromMap(e.data())).toList();
+    for (var group in groups.docs) {
+      String id = group.id;
+      var data = group.data();
+      data.addAll({'id': id});
+      groupList.add(Group.fromMap(data));
+    }
+
+    return groupList;
   }
 
   @override
@@ -58,6 +65,7 @@ class _GroupsPageState extends State<GroupsPage> {
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               var group = snapshot.data![index];
+
               return ListTile(
                 onTap: () {
                   Navigator.push(
