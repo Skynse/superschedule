@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:superschedule/models/availability.dart';
 import 'package:superschedule/models/group.dart';
 import 'package:superschedule/pages/createEvent.dart';
 import 'package:superschedule/services/firebase_service.dart';
@@ -36,10 +37,13 @@ class _GroupViewState extends State<GroupView> {
         var data = element.data();
         var startTime = data['start_time'].toDate();
         var endTime = data['end_time'].toDate();
+        var weekday = data['week_day'];
+
+        print(startTime);
 
         appointments.add(Appointment(
-          startTime: startTime,
-          endTime: endTime,
+          startTime: getWeekDayFromStartTime(startTime, weekday),
+          endTime: getWeekDayFromEndTime(endTime, weekday),
           subject: memberDoc['email'],
           color: Colors.green,
         ));
