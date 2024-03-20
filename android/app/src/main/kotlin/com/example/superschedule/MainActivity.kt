@@ -1,4 +1,4 @@
-package com.example.superschedule
+package com.example.scheduleup
 
 import io.flutter.embedding.android.FlutterActivity
 

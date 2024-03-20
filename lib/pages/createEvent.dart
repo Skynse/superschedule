@@ -3,10 +3,10 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:superschedule/models/group.dart';
+import 'package:scheduleup/models/group.dart';
 
-import 'package:superschedule/pages/createEvent.dart';
-import 'package:superschedule/services/firebase_service.dart';
+import 'package:scheduleup/pages/createEvent.dart';
+import 'package:scheduleup/services/firebase_service.dart';
 import 'package:intl/intl.dart' as intl;
 
 class CreateEventForm extends ConsumerStatefulWidget {

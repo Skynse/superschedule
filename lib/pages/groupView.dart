@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:superschedule/models/availability.dart';
-import 'package:superschedule/models/group.dart';
-import 'package:superschedule/pages/createEvent.dart';
-import 'package:superschedule/services/firebase_service.dart';
+import 'package:scheduleup/models/availability.dart';
+import 'package:scheduleup/models/group.dart';
+import 'package:scheduleup/pages/createEvent.dart';
+import 'package:scheduleup/services/firebase_service.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class GroupView extends StatefulWidget {

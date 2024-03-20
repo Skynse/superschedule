@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:superschedule/firebase_options.dart';
-import 'package:superschedule/pages/dash.dart';
-import 'package:superschedule/services/firebase_service.dart';
-import 'package:superschedule/pages/registration_page.dart';
+import 'package:scheduleup/firebase_options.dart';
+import 'package:scheduleup/pages/dash.dart';
+import 'package:scheduleup/services/firebase_service.dart';
+import 'package:scheduleup/pages/registration_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {

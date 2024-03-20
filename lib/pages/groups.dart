@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:superschedule/models/group.dart';
-import 'package:superschedule/pages/groupView.dart';
+import 'package:scheduleup/models/group.dart';
+import 'package:scheduleup/pages/groupView.dart';
 
 class GroupsPage extends StatefulWidget {
   const GroupsPage({super.key});

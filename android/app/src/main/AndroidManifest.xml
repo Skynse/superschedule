@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     
     <application
-        android:label="superschedule"
+        android:label="scheduleup"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

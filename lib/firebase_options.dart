@@ -66,7 +66,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '545721613351',
     projectId: 'schedule-up-deejyd',
     storageBucket: 'schedule-up-deejyd.appspot.com',
-    iosBundleId: 'com.example.superschedule',
+    iosBundleId: 'com.example.scheduleup',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -75,6 +75,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '545721613351',
     projectId: 'schedule-up-deejyd',
     storageBucket: 'schedule-up-deejyd.appspot.com',
-    iosBundleId: 'com.example.superschedule.RunnerTests',
+    iosBundleId: 'com.example.scheduleup.RunnerTests',
   );
 }

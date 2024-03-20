@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:superschedule/models/user.dart';
-import 'package:superschedule/services/firebase_service.dart';
+import 'package:scheduleup/models/user.dart';
+import 'package:scheduleup/services/firebase_service.dart';
 
 class FriendsList extends StatefulWidget {
   const FriendsList({Key? key}) : super(key: key);

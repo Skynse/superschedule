@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:superschedule/services/firebase_service.dart';
+import 'package:scheduleup/services/firebase_service.dart';
 
 class RegistrationPage extends ConsumerStatefulWidget {
   @override

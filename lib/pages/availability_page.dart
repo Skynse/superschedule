@@ -2,28 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:superschedule/models/availability.dart';
+import 'package:scheduleup/models/availability.dart';
 import 'package:intl/intl.dart';
 import 'package:weekday_selector/weekday_selector.dart';
-
-DateTime getWeekDayFromStartTime(DateTime startTime, int weekDay) {
-  // clamp to this week
-  var now = DateTime.now();
-  var startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-  var endOfWeek = now.add(Duration(days: DateTime.saturday - now.weekday));
-  var day = startOfWeek.add(Duration(days: weekDay - 1));
-  return DateTime(
-      day.year, day.month, day.day, startTime.hour, startTime.minute);
-}
-
-DateTime getWeekDayFromEndTime(DateTime endTime, int weekDay) {
-  // clamp to this week
-  var now = DateTime.now();
-  var startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-  var endOfWeek = now.add(Duration(days: DateTime.saturday - now.weekday));
-  var day = startOfWeek.add(Duration(days: weekDay - 1));
-  return DateTime(day.year, day.month, day.day, endTime.hour, endTime.minute);
-}
 
 class AvailabilityDataSource extends CalendarDataSource {
   AvailabilityDataSource(List<Appointment> source) {
@@ -118,16 +99,67 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
 
                 dataSource: AvailabilityDataSource(appointments),
                 appointmentBuilder: (context, details) {
-                  return Container(
-                    color: Colors.blue,
-                    child: Column(
-                      children: [
-                        Text(details.appointments.first.subject),
-                        Text(DateFormat('h:mm a')
-                            .format(details.appointments.first.startTime)),
-                        Text(DateFormat('h:mm a')
-                            .format(details.appointments.first.endTime)),
-                      ],
+                  return InkWell(
+                    onLongPress: () async {
+                      bool confirmDelete = await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Confirmation'),
+                            content: Text(
+                                'Are you sure you want to delete this availability?'),
+                            actions: [
+                              TextButton(
+                                child: Text('Cancel'),
+                                onPressed: () {
+                                  Navigator.of(context).pop(false);
+                                },
+                              ),
+                              TextButton(
+                                child: Text('Delete'),
+                                onPressed: () {
+                                  Navigator.of(context).pop(true);
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (confirmDelete == true) {
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(widget.uid)
+                            .collection('availabilities')
+                            .doc(snapshot.data!
+                                .firstWhere(
+                                  (element) =>
+                                      element.title ==
+                                      details.appointments.first.subject,
+                                  orElse: () => Availability(
+                                    title: '',
+                                    startTime: DateTime.now(),
+                                    endTime: DateTime.now(),
+                                    weekDay: 0,
+                                  ),
+                                )
+                                .id)
+                            .delete();
+
+                        setState(() {});
+                      }
+                    },
+                    child: Container(
+                      color: Colors.blue,
+                      child: Column(
+                        children: [
+                          Text(details.appointments.first.subject),
+                          Text(DateFormat('h:mm a')
+                              .format(details.appointments.first.startTime)),
+                          Text(DateFormat('h:mm a')
+                              .format(details.appointments.first.endTime)),
+                        ],
+                      ),
                     ),
                   );
                 },

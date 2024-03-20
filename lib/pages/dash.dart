@@ -2,12 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:superschedule/models/event.dart';
-import 'package:superschedule/pages/createEvent.dart';
-import 'package:superschedule/pages/eventView.dart';
-import 'package:superschedule/pages/friends.dart';
-import 'package:superschedule/pages/groups.dart';
-import 'package:superschedule/pages/profile.dart';
+import 'package:intl/intl.dart';
+import 'package:scheduleup/models/event.dart';
+import 'package:scheduleup/pages/createEvent.dart';
+import 'package:scheduleup/pages/eventView.dart';
+import 'package:scheduleup/pages/friends.dart';
+import 'package:scheduleup/pages/groups.dart';
+import 'package:scheduleup/pages/profile.dart';
 import 'package:intl/intl.dart';
 
 class Dashboard extends StatefulWidget {
@@ -15,6 +16,24 @@ class Dashboard extends StatefulWidget {
 
   @override
   State<Dashboard> createState() => _DashboardState();
+}
+
+String calculateTimeAway(DateTime eventDate) {
+  var now = DateTime.now();
+  var difference = eventDate.difference(now);
+  var days = difference.inDays;
+  var hours = difference.inHours;
+  var minutes = difference.inMinutes;
+
+  if (days > 0) {
+    return '$days days away';
+  } else if (hours > 0) {
+    return '$hours hours away';
+  } else if (minutes > 0) {
+    return '$minutes minutes away';
+  } else {
+    return 'happening now';
+  }
 }
 
 class _DashboardState extends State<Dashboard> {
@@ -141,11 +160,12 @@ class _EventListViewState extends ConsumerState<EventListView> {
         child: Container(
           child: FutureBuilder(
             future: FirebaseFirestore.instance
-                .collection('users')
-                .doc(FirebaseAuth.instance.currentUser!.uid)
-                .collection('alerts')
+                .collection('events')
+                .where('subscribers',
+                    arrayContains: FirebaseAuth.instance.currentUser!.uid)
                 .get(),
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
                   child: CircularProgressIndicator(),
@@ -170,7 +190,8 @@ class _EventListViewState extends ConsumerState<EventListView> {
 
                   return ListTile(
                     title: Text(data['title']),
-                    subtitle: Text(data['description']),
+                    subtitle: Text(
+                        "Event ${data['title']} is ${calculateTimeAway(data['date'].toDate())}"),
                   );
                 }).toList(),
               );

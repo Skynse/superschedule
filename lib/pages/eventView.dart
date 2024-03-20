@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:superschedule/models/event.dart';
-import 'package:superschedule/models/user.dart';
-import 'package:superschedule/services/firebase_service.dart';
+import 'package:scheduleup/models/event.dart';
+import 'package:scheduleup/models/user.dart';
+import 'package:scheduleup/services/firebase_service.dart';
 
 class EventView extends StatefulWidget {
   Event event;
@@ -171,28 +171,7 @@ class _EventViewState extends State<EventView> {
           // end time
           // creator
           // subscribers
-          ElevatedButton(
-            onPressed: () async {
-              if (widget.event.subscribers
-                  .contains(FirebaseAuth.instance.currentUser!.uid)) {
-                await _unsubscribeFromEvent();
-                setState(() {
-                  widget.event.subscribers
-                      .remove(FirebaseAuth.instance.currentUser!.uid);
-                });
-              } else {
-                await _subscribeToEvent();
-                setState(() {
-                  widget.event.subscribers
-                      .add(FirebaseAuth.instance.currentUser!.uid);
-                });
-              }
-            },
-            child: Text(widget.event.subscribers
-                    .contains(FirebaseAuth.instance.currentUser!.uid)
-                ? 'Unsubscribe'
-                : 'Subscribe'),
-          ),
+
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -200,8 +179,9 @@ class _EventViewState extends State<EventView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // event date
-                  Image.network(
+                  /* Image.network(
                       'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/schedule-app-jjmyyk/assets/qjsodqos36m8/no_image.jpg'),
+                  */
                   SizedBox(height: 16),
                   Text(widget.event.eventTitle, style: TextStyle(fontSize: 24)),
 
@@ -239,6 +219,28 @@ class _EventViewState extends State<EventView> {
                         ],
                       );
                     },
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (widget.event.subscribers
+                          .contains(FirebaseAuth.instance.currentUser!.uid)) {
+                        await _unsubscribeFromEvent();
+                        setState(() {
+                          widget.event.subscribers
+                              .remove(FirebaseAuth.instance.currentUser!.uid);
+                        });
+                      } else {
+                        await _subscribeToEvent();
+                        setState(() {
+                          widget.event.subscribers
+                              .add(FirebaseAuth.instance.currentUser!.uid);
+                        });
+                      }
+                    },
+                    child: Text(widget.event.subscribers
+                            .contains(FirebaseAuth.instance.currentUser!.uid)
+                        ? 'Unsubscribe'
+                        : 'Subscribe'),
                   ),
                 ],
               ),

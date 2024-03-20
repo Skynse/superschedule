@@ -1,4 +1,4 @@
-# superschedule
+# scheduleup
 
 A new Flutter project.
 

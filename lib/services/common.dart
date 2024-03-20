@@ -2,7 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:superschedule/models/user.dart';
+import 'package:scheduleup/models/user.dart';
 
 Future<List<SuperUser>> findMatchingTimes(
     DateTime? startTime, DateTime? endTime) {

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:superschedule/models/user.dart';
+import 'package:scheduleup/models/user.dart';
 
 class FirebaseService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -17,8 +17,28 @@ class FirebaseService extends ChangeNotifier {
     await _auth.signOut();
   }
 
-  Future<void> signInWithEmailAndPassword(String email, String password) async {
-    await _auth.signInWithEmailAndPassword(email: email, password: password);
+  Future<User> signInWithEmailAndPassword(String email, String password) async {
+    try {
+      var user = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      return user.user!;
+    } on FirebaseAuthException catch (e) {
+      throw e;
+    }
+  }
+
+  Future<QuerySnapshot> getMutualEvents() async {
+    return FirebaseFirestore.instance
+        .collection('events')
+        .where(
+          'creator',
+          isEqualTo: _auth.currentUser!.uid,
+        )
+        .where(
+          'subscribers',
+          arrayContains: _auth.currentUser!.uid,
+        )
+        .get();
   }
 
   Stream<List<SuperUser>> getFriends() async* {

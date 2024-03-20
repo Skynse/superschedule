@@ -1,6 +1,6 @@
 {
-    "name": "superschedule",
-    "short_name": "superschedule",
+    "name": "scheduleup",
+    "short_name": "scheduleup",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#hexcode",
