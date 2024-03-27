@@ -165,7 +165,6 @@ class LoginForm extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Login'),
             TextFormField(
               controller: emailController,
               decoration: InputDecoration(

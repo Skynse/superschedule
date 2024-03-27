@@ -65,10 +65,12 @@ class FirebaseService extends ChangeNotifier {
         email: email, password: password);
 
     await _auth.currentUser!.updateDisplayName(displayName);
+
     await FirebaseFirestore.instance
         .collection('users')
         .doc(_auth.currentUser!.uid)
         .set({
+      'uid': _auth.currentUser!.uid,
       'email': email,
       'display_name': displayName,
     });

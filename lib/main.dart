@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +13,16 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await FirebaseFirestore.instance
+      .collection('events')
+      .where('date', isLessThan: DateTime.now())
+      .get()
+      .then((snapshot) {
+    for (var doc in snapshot.docs) {
+      doc.reference.delete();
+    }
+  });
 
   runApp(ProviderScope(child: App()));
 }
