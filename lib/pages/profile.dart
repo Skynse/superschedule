@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -179,6 +180,12 @@ class _EditAccountPageState extends State<EditAccountPage> {
                   if (_formKey.currentState!.validate()) {
                     await FirebaseAuth.instance.currentUser!
                         .updateDisplayName(_nameController.text);
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .update({
+                      'display_name': _nameController.text,
+                    });
                     await FirebaseAuth.instance.currentUser!
                         .updateEmail(_emailController.text);
                     Navigator.pop(context);

@@ -139,8 +139,9 @@ class _EventViewState extends State<EventView> {
                                   ...snapshot.data!.map<Widget>((e) {
                                     return ListTile(
                                       leading: CircleAvatar(
-                                        backgroundImage:
-                                            NetworkImage(e.photoUrl ?? ''),
+                                        backgroundImage: NetworkImage(e
+                                                .photoUrl ??
+                                            'https://placehold.co/600x400/png'),
                                       ),
                                       title: Text(e.name),
                                       onTap: () async {
@@ -210,7 +211,8 @@ class _EventViewState extends State<EventView> {
                           ...snapshot.data!.map((e) {
                             return ListTile(
                               leading: CircleAvatar(
-                                backgroundImage: NetworkImage(e.photoUrl ?? ''),
+                                backgroundImage: NetworkImage(e.photoUrl ??
+                                    'https://placehold.co/600x400/png'),
                               ),
                               title: Text(e.name),
                             );

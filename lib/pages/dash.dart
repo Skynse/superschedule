@@ -203,7 +203,17 @@ class _EventListViewState extends ConsumerState<EventListView> {
         title: const Text('Events'),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('events').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('events')
+            .where(
+              Filter.or(
+                Filter("subscribers",
+                    arrayContains: FirebaseAuth.instance.currentUser!.uid),
+                Filter("creator",
+                    isEqualTo: FirebaseAuth.instance.currentUser!.uid),
+              ),
+            )
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
