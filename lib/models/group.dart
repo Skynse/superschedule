@@ -6,13 +6,18 @@ class Group {
   final String groupName;
   List<String> members;
   String? id;
+  String ownerId;
 
-  Group({required this.groupName, this.members = const []});
+  Group(
+      {required this.groupName,
+      this.members = const [],
+      required this.ownerId});
 
   Group.fromMap(Map<String, dynamic> data)
       : groupName = data['name'],
         id = data['id'],
-        members = List<String>.from(data['members']);
+        members = List<String>.from(data['members']),
+        ownerId = data['ownerId'];
 
   Future<void> addMember(User user) async {
     members.add(user.uid);
@@ -38,11 +43,16 @@ class Group {
     var user = FirebaseAuth.instance.currentUser;
     await FirebaseFirestore.instance.collection('groups').doc(groupName).set({
       'name': groupName,
-      'members': [user!.uid]
+      'members': [user!.uid],
+      'ownerId': user.uid
     });
   }
 
   toMap() {
-    return {'name': groupName, 'members': members.map((e) => e).toList()};
+    return {
+      'name': groupName,
+      'members': members.map((e) => e).toList(),
+      'ownerId': ownerId
+    };
   }
 }

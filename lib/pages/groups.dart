@@ -126,6 +126,7 @@ class _CreateGroupFormState extends State<CreateGroupForm> {
                     var group = Group(
                       groupName: _groupNameController.text,
                       members: [user!.uid],
+                      ownerId: user.uid,
                     );
 
                     await FirebaseFirestore.instance

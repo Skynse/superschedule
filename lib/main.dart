@@ -14,16 +14,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  await FirebaseFirestore.instance
-      .collection('events')
-      .where('date', isLessThan: DateTime.now())
-      .get()
-      .then((snapshot) {
-    for (var doc in snapshot.docs) {
-      doc.reference.delete();
-    }
-  });
-
   runApp(ProviderScope(child: App()));
 }
 

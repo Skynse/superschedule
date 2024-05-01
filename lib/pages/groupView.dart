@@ -69,6 +69,23 @@ class _GroupViewState extends State<GroupView> {
       appBar: AppBar(
         title: Text(widget.group.groupName),
         actions: [
+          widget.group.ownerId == FirebaseAuth.instance.currentUser!.uid
+              ? IconButton(
+                  onPressed: () async {
+                    await FirebaseFirestore.instance
+                        .collection('groups')
+                        .doc(widget.group.id)
+                        .delete();
+
+                    // delete events associated with the group
+
+                    await FirebaseFirestore.instance
+                        .collection('events')
+                        .where('group', isEqualTo: widget.group.id);
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.delete))
+              : const SizedBox(),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
