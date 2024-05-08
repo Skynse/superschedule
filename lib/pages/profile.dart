@@ -92,6 +92,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                   child: const Text('Edit Account'),
                 ),
+
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -106,6 +108,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
 
                 // sign out section
+                SizedBox(height: 16),
 
                 ElevatedButton(
                   onPressed: () {

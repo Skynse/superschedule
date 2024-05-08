@@ -7,6 +7,48 @@ class RegistrationPage extends ConsumerStatefulWidget {
   ConsumerState<RegistrationPage> createState() => _RegistrationPageState();
 }
 
+class PasswordTextField extends StatefulWidget {
+  PasswordTextField(
+      {super.key,
+      required this.controller,
+      required this.labelText,
+      required this.validator});
+  TextEditingController controller;
+  String labelText;
+  String? Function(String?) validator;
+
+  @override
+  State<PasswordTextField> createState() => _PasswordTextFieldState();
+}
+
+class _PasswordTextFieldState extends State<PasswordTextField> {
+  bool _obscureText = true;
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      obscureText: _obscureText,
+      controller: widget.controller,
+      decoration: InputDecoration(
+        labelText: widget.labelText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscureText ? Icons.visibility : Icons.visibility_off,
+          ),
+          onPressed: () {
+            setState(() {
+              _obscureText = !_obscureText;
+            });
+          },
+        ),
+      ),
+      validator: widget.validator,
+    );
+  }
+}
+
 class _RegistrationPageState extends ConsumerState<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
 
@@ -91,15 +133,9 @@ class RegistrationForm extends ConsumerWidget {
               },
             ),
             const SizedBox(height: 16),
-            TextFormField(
-              obscureText: true,
+            PasswordTextField(
               controller: passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+              labelText: 'Password',
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a password';
@@ -108,15 +144,9 @@ class RegistrationForm extends ConsumerWidget {
               },
             ),
             const SizedBox(height: 16),
-            TextFormField(
-              obscureText: true,
+            PasswordTextField(
               controller: confirmPasswordController,
-              decoration: InputDecoration(
-                labelText: 'Confirm Password',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+              labelText: 'Confirm Password',
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please confirm your password';
@@ -181,15 +211,9 @@ class LoginForm extends ConsumerWidget {
               },
             ),
             const SizedBox(height: 16),
-            TextFormField(
+            PasswordTextField(
               controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+              labelText: 'Password',
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a password';
