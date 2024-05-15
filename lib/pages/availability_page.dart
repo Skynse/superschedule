@@ -21,7 +21,7 @@ class AvailabilityPage extends StatefulWidget {
 }
 
 class _AvailabilityPageState extends State<AvailabilityPage> {
-  Future<List<Availability>> _getAvailability() async {
+  Stream<List<Availability>> _getAvailability() async* {
     var user = FirebaseAuth.instance.currentUser;
     var availability = await FirebaseFirestore.instance
         .collection('users')
@@ -29,7 +29,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
         .collection('availabilities')
         .get();
 
-    return availability.docs
+    yield availability.docs
         .map((e) => Availability.fromMap(e.data(), e.id))
         .toList();
   }
@@ -64,8 +64,8 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
         appBar: AppBar(
           title: Text("My Availability"),
         ),
-        body: FutureBuilder<List<Availability>>(
-            future: _getAvailability(),
+        body: StreamBuilder<List<Availability>>(
+            stream: _getAvailability(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
@@ -291,7 +291,9 @@ class _CreateAvailabilityFormState extends State<CreateAvailabilityForm> {
                         .collection('availabilities')
                         .add(availability.toMap());
 
-                    Navigator.pop(context);
+                    if (!mounted) return;
+                    // pop until at settings page
+                    Navigator.of(context).popUntil((route) => route.isFirst);
                   }
                 },
                 child: Text('Create Availability'),

@@ -68,40 +68,43 @@ class _EventViewState extends State<EventView> {
         appBar: AppBar(
           title: Text(widget.event.eventTitle),
           actions: [
-            IconButton(
-                onPressed: () async {
-                  await showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text('Delete Event'),
-                          content: Text(
-                              'Are you sure you want to delete this event?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                await FirebaseFirestore.instance
-                                    .collection('events')
-                                    .doc(widget.eventId)
-                                    .delete();
+            FirebaseAuth.instance.currentUser!.uid == widget.event.creator
+                ? IconButton(
+                    onPressed: () async {
+                      await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('Delete Event'),
+                              content: Text(
+                                  'Are you sure you want to delete this event?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    await FirebaseFirestore.instance
+                                        .collection('events')
+                                        .doc(widget.eventId)
+                                        .delete();
 
-                                if (!mounted) return;
-
-                                Navigator.pop(context);
-                              },
-                              child: Text('Delete'),
-                            ),
-                          ],
-                        );
-                      });
-                },
-                icon: Icon(Icons.delete)),
+                                    if (mounted) {
+                                      Navigator.popUntil(
+                                          context, (route) => route.isFirst);
+                                    }
+                                  },
+                                  child: Text('Delete'),
+                                ),
+                              ],
+                            );
+                          });
+                    },
+                    icon: Icon(Icons.delete))
+                : Container(),
 
             // invite
 

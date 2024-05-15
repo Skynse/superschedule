@@ -18,9 +18,12 @@ class Dashboard extends StatefulWidget {
   State<Dashboard> createState() => _DashboardState();
 }
 
-String calculateTimeAway(DateTime eventDate) {
+String calculateTimeAway(Event event) {
   var now = DateTime.now();
-  var difference = eventDate.difference(now);
+  var eventDateAndTime = event.eventDate.add(
+      Duration(hours: event.startTime.hour, minutes: event.startTime.minute));
+
+  var difference = eventDateAndTime.difference(now);
   var days = difference.inDays;
   var hours = difference.inHours;
   var minutes = difference.inMinutes;
@@ -158,12 +161,18 @@ class _EventListViewState extends ConsumerState<EventListView> {
     return Scaffold(
       endDrawer: Drawer(
         child: Container(
-          child: FutureBuilder(
-            future: FirebaseFirestore.instance
+          child: StreamBuilder(
+            stream: FirebaseFirestore.instance
                 .collection('events')
-                .where('subscribers',
-                    arrayContains: FirebaseAuth.instance.currentUser!.uid)
-                .get(),
+                .where(
+                  Filter.or(
+                    Filter("subscribers",
+                        arrayContains: FirebaseAuth.instance.currentUser!.uid),
+                    Filter("creator",
+                        isEqualTo: FirebaseAuth.instance.currentUser!.uid),
+                  ),
+                )
+                .snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -188,10 +197,12 @@ class _EventListViewState extends ConsumerState<EventListView> {
                   Map<String, dynamic> data =
                       document.data()! as Map<String, dynamic>;
 
+                  Event event = Event.fromMap(data, document.id);
+
                   return ListTile(
-                    title: Text(data['title']),
+                    title: Text(event.eventTitle),
                     subtitle: Text(
-                        "Event ${data['title']} is ${calculateTimeAway(data['date'].toDate())}"),
+                        "Event ${data['title']} is ${calculateTimeAway(event)}"),
                   );
                 }).toList(),
               );

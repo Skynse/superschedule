@@ -30,7 +30,7 @@ class _AppState extends ConsumerState<App> {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(),
+      theme: ThemeData.dark(),
       home: StreamBuilder<User?>(
         stream: loggedIn,
         builder: (context, snapshot) {

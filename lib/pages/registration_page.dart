@@ -140,6 +140,10 @@ class RegistrationForm extends ConsumerWidget {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a password';
                 }
+
+                if (value.length < 6) {
+                  return 'Password must be at least 6 characters';
+                }
                 return null;
               },
             ),
@@ -153,6 +157,10 @@ class RegistrationForm extends ConsumerWidget {
                 }
                 if (value != passwordController.text) {
                   return 'Passwords do not match';
+                }
+
+                if (value.length < 6) {
+                  return 'Password must be at least 6 characters';
                 }
                 return null;
               },
